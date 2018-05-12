@@ -17,10 +17,8 @@ tickerURL = "https://api.coinmarketcap.com/v2/ticker/"
 def getPrice():
     tickerURL = "https://api.coinmarketcap.com/v2/ticker/"
     tickerURL += '/1/'
-    json_data = requests.get(tickerURL).json()
-
-    for item in json_data['data']:
-        print(item)
+    json_data = requests.get(tickerURL).json()['data']['quotes']['USD']['price']
+    print(json_data)
 
 
 def getHistoric():
@@ -31,7 +29,8 @@ def getHistoric():
         print(item2)
 
 if __name__ == '__main__':
-    #getPrice()
-    getHistoric()
+    getPrice()
+    #getHistoric()
+
 
 
