@@ -15,9 +15,9 @@ import time
 
 #Authentificate to our MYSQL db
 #utf8mb4 allows to support emoji (4 instead of 3 megabytes)
-cnx = mysql.connector.connect(user='sql7234835', password='YF68XHI7r8',
-                              host='sql7.freemysqlhosting.net',
-                              database='sql7234835',
+cnx = mysql.connector.connect(user='xxx', password='xxx',
+                              host='xxx',
+                              database='xxx',
                               charset = 'utf8mb4')
 
 cursor = cnx.cursor()
@@ -25,10 +25,10 @@ cursor = cnx.cursor()
 
 #Authentificate to twitter API
 #with keys and tokens
-myKey = "OoeDEgkX47RFyKcgKGplhg23Q"
-mySecret = "4o0jJ8tNmFPlSbkyy8lMDaYazXpIc1f1GF21phvlpy28aPXVgm"
-myToken = "989848008694083584-6ZReWbJgEIdqheN8LbO3d9FIlitUNhp"
-myTokenSecret = "vLb5aLG4VOoZQBD2A4BCsb2DCZ8QhogR6A8Ly7OjUXxbL"
+myKey = "xxx"
+mySecret = "xxxx"
+myToken = "xxxx"
+myTokenSecret = "xxxx"
 
 consumer = oauth.Consumer(key=myKey, secret=mySecret)
 access_token = oauth.Token(key=myToken, secret=myTokenSecret)
