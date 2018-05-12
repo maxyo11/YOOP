@@ -15,20 +15,20 @@ import time
 
 #Authentificate to our MYSQL db
 #utf8mb4 allows to support emoji (4 instead of 3 megabytes)
-cnx = mysql.connector.connect(user='XXX', password='XXX',
-                              host='XXX',
-                              database='XXX',
-                              charset = 'XXX')
+cnx = mysql.connector.connect(user='sql7234835', password='YF68XHI7r8',
+                              host='sql7.freemysqlhosting.net',
+                              database='sql7234835',
+                              charset = 'utf8mb4')
 
 cursor = cnx.cursor()
 
 
 #Authentificate to twitter API
 #with keys and tokens
-myKey = "XXX"
-mySecret = "XXX"
-myToken = "XXX"
-myTokenSecret = "XXXX"
+myKey = "OoeDEgkX47RFyKcgKGplhg23Q"
+mySecret = "4o0jJ8tNmFPlSbkyy8lMDaYazXpIc1f1GF21phvlpy28aPXVgm"
+myToken = "989848008694083584-6ZReWbJgEIdqheN8LbO3d9FIlitUNhp"
+myTokenSecret = "vLb5aLG4VOoZQBD2A4BCsb2DCZ8QhogR6A8Ly7OjUXxbL"
 
 consumer = oauth.Consumer(key=myKey, secret=mySecret)
 access_token = oauth.Token(key=myToken, secret=myTokenSecret)
@@ -50,26 +50,36 @@ tweets = json.loads(data)
 twitterData = tweets["statuses"]
 
 for tweetInfo in twitterData:
-    print tweetInfo
+    print(tweetInfo)
+
+#tweetText = twitterData["text"]
+
+#cursor.execute("INSERT * INTO twitterTable (user, tweet_id, postDate, tweetText, followers, retweet, favorite) VALUES (%s,%s,%s,%s,%s,%s,%s)" % (user, tweet_id, postDate, tweetText, followers, retweet, favorite))
+#cnx.commit()
+
 
 
 # all the info we want to gather
-if 'text' in tweets:
-    tweet = tweets["text"]
-    post_date = tweets["created_at"]
-    retweeted = tweets["retweeted"]
-    username = tweets["user"]["screen_name"]
-    engagement = tweets ["engagement"]
+#if 'text' in tweets:
+
+
+'''
+user = twitterData["user"]["screen_name"]
+tweet_id = twitterData["user"]["screen_name"]
+postDate = twitterData["created_at"]
+tweetText = twitterData["text"]
+followers = twitterData["user"]["followers_count"]
+retweet = twitterData["retweet_count"]
+favorite = twitterData["favorite_count"]
 
     # insert the data to our db
     # Change and coincide with db!
-    cursor.execute(
-        "INSERT * INTO TwitterData (postDate, username, tweet, retweeted, postViews) VALUES (%s,%s,%s,%s,%s,%s,%s)",
-        (post_date, username, tweet, retweeted, engagement))
+cursor.execute("INSERT INTO twitterTable (user, tweet_id, postDate, tweetText, followers, retweet, favorite) VALUES (%s,%s,%s,%s,%s,%s,%s)", (user, tweet_id, postDate, tweetText, followers, retweet, favorite))
     cnx.commit()
 
-    print((username, tweet))
+print(user, tweet_id, postDate, tweetText, followers, retweet, favorite)
 
+'''
 
 
 '''
@@ -125,7 +135,7 @@ cnx.close()
 
 
 
-
+'''
 
 #We import everything from tkInter for the user interface
 from tkinter import *
@@ -165,7 +175,7 @@ class appView():
     window(root)
     mainloop()
 
-'''
+
 #Create the trends function
 def trendsCrypto():
 for i, val in enumerate(cryptoDataPosts):
