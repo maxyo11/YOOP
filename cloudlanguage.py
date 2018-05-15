@@ -1,18 +1,40 @@
+import config
+import mysql.connector
+# connect to db:
+cnx = mysql.connector.connect(user=config.User, password=config.password,
+                            host=config.host,
+                            database=config.database,
+                            charset =config.charset)
+cursor = cnx.cursor()
+
+def getTweetText():
+    cursor.execute("SELECT tweetText FROM twitterTable")
+    row = cursor.fetchone()
+    while row is not None:
+        print(row[0])
+        row = cursor.fetchone()
+#getTweetText()
+
+def get_average_sentiment():
+    cursor.execute("SELECT AVG(followers) FROM twitterTable")
+    average = cursor.fetchone()
+    for a in average:
+        print(a)
+
+get_average_sentiment()
 
 
-#Authentication Google Cloud API:
 
-
-
+# Authentication Google Cloud API:
 def analyseSentiment():
-    #Import Google Cloud package
+    # Import Google Cloud package
     import google.cloud.language
     # environment variable needs to be set: GOOGLE_APPLICATION_CREDENTIALS="Key Location"
     # This way we can leave the argument for the LanguageServiceClient empty.
     language_client = google.cloud.language.LanguageServiceClient()
 
     # Make an authenticated API request
-    #Specify the text you want to analyse
+    # Specify the text you want to analyse
     text = 'Bitcoin is the best thing ever!'
     document = google.cloud.language.types.Document(
         content=text,
@@ -25,8 +47,8 @@ def analyseSentiment():
     print(u'Sentiment: Score: {}, Magnitude: {}'.format(
         sentiment.score, sentiment.magnitude))
 
-analyseSentiment()
+# analyseSentiment()
 
 
 # Create a Language client.
-#language_client = google.cloud.language.LanguageServiceClient()
+# language_client = google.cloud.language.LanguageServiceClient()

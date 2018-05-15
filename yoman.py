@@ -8,30 +8,28 @@ import datetime
 import mysql.connector
 from mysql.connector import errorcode
 import time
-
-
-
+import config
+from datetime import datetime, timezone
+import pytz
 
 
 #Authentificate to our MYSQL db
 #utf8mb4 allows to support emoji (4 instead of 3 megabytes)
-cnx = mysql.connector.connect(user='sql7234835', password='YF68XHI7r8',
-                              host='sql7.freemysqlhosting.net',
-                              database='sql7234835',
-                              charset = 'utf8mb4')
 
+cnx = mysql.connector.connect(user=config.User, password=config.password,
+                            host=config.host,
+                            database=config.database,
+                            charset =config.charset)
 cursor = cnx.cursor()
+
+
 
 
 #Authentificate to twitter API
 #with keys and tokens
-myKey = "OoeDEgkX47RFyKcgKGplhg23Q"
-mySecret = "4o0jJ8tNmFPlSbkyy8lMDaYazXpIc1f1GF21phvlpy28aPXVgm"
-myToken = "989848008694083584-6ZReWbJgEIdqheN8LbO3d9FIlitUNhp"
-myTokenSecret = "vLb5aLG4VOoZQBD2A4BCsb2DCZ8QhogR6A8Ly7OjUXxbL"
 
-consumer = oauth.Consumer(key=myKey, secret=mySecret)
-access_token = oauth.Token(key=myToken, secret=myTokenSecret)
+consumer = oauth.Consumer(key=config.myKey, secret=config.mySecret)
+access_token = oauth.Token(key=config.myToken, secret=config.myTokenSecret)
 client = oauth.Client(consumer, access_token)
 
 
@@ -41,51 +39,62 @@ cryptoDataPosts = ['bitcoin', 'ethereum', 'ripple', 'bitcoin cash', 'cardano', '
 
 #call twitter api to do a search with keyword from cryptoDataPosts
 for i, val in enumerate(cryptoDataPosts):
-    bitcoinPosts = "https://api.twitter.com/1.1/search/tweets.json?l=en&q=/%s" % val
+    bitcoinPosts = "https://api.twitter.com/1.1/search/tweets.json?l=en&count=100&q=/%s" % val
     response, data = client.request(bitcoinPosts)
+
 # Create a json object
 tweets = json.loads(data)
+#print(tweets)
 
 
 twitterData = tweets["statuses"]
+#print(twitterData)
 
-for tweetInfo in twitterData:
-    print(tweetInfo)
+
+#test = twitterData[1]['retweeted_status']['user']['followers_count']
+#print(test)
+
 
 #tweetText = twitterData["text"]
 
-#cursor.execute("INSERT * INTO twitterTable (user, tweet_id, postDate, tweetText, followers, retweet, favorite) VALUES (%s,%s,%s,%s,%s,%s,%s)" % (user, tweet_id, postDate, tweetText, followers, retweet, favorite))
-#cnx.commit()
-
-
-
 # all the info we want to gather
-#if 'text' in tweets:
+
+
+# NEW: Below you can see how to gather data for each variable.
+
+def sendtweetstodb():
+    try:
+        for a in range(0,150):
+            user = twitterData[a]['user']['screen_name']
+            tweetID = twitterData[a]['id_str']
+            postDate = datetime.strptime(twitterData[a]["created_at"], '%a %b %d %H:%M:%S %z %Y').\
+                replace(tzinfo=timezone.utc).astimezone(pytz.timezone('Europe/Berlin')).\
+                strftime('%Y-%m-%d %H:%M:%S')
+            tweetText = twitterData[a]['text']
+            followers = twitterData[a]['user']['followers_count']
+            retweet = twitterData[a]['retweet_count']
+            favorite = twitterData[a]['favorite_count']
+        # insert the data to our db
+        # Change and coincide with db!
+            cursor.execute("INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, favorite) "
+                           "VALUES (%s,%s,%s,%s,%s,%s,%s)", (user, tweetID, postDate, tweetText, followers, retweet, favorite))
+            cnx.commit()
+            print(user, bitcoinPosts)
+    except BaseException as ex:
+        print("Tweetcollection has finished. %s Tweets have been collected" % a)
+        print(ex)
+
+
+#while True:
+sendtweetstodb()
+#except BaseException as exep
+ #   print(exep)
+
+
+
 
 
 '''
-user = twitterData["user"]["screen_name"]
-tweet_id = twitterData["user"]["screen_name"]
-postDate = twitterData["created_at"]
-tweetText = twitterData["text"]
-followers = twitterData["user"]["followers_count"]
-retweet = twitterData["retweet_count"]
-favorite = twitterData["favorite_count"]
-
-    # insert the data to our db
-    # Change and coincide with db!
-cursor.execute("INSERT INTO twitterTable (user, tweet_id, postDate, tweetText, followers, retweet, favorite) VALUES (%s,%s,%s,%s,%s,%s,%s)", (user, tweet_id, postDate, tweetText, followers, retweet, favorite))
-    cnx.commit()
-
-print(user, tweet_id, postDate, tweetText, followers, retweet, favorite)
-
-'''
-
-
-'''
-
-
-
     #postViews = tweets ["engagement"]
 
     insert = "INSERT INTO TwitterData (bitcoinPosts) VALUES (%s)"
@@ -182,5 +191,4 @@ for i, val in enumerate(cryptoDataPosts):
 
 
 #Create the prediction function
-
 '''

@@ -8,3 +8,8 @@ if is_venv():
     print('inside virtualenv or venv')
 else:
     print('outside virtualenv or venv')
+
+
+for i in range(0,50):
+
+    print(i)
