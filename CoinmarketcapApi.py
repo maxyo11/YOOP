@@ -31,5 +31,9 @@ def getHistoric():
 if __name__ == '__main__':
     getPrice()
     #getHistoric()
+<<<<<<< HEAD
+=======
+
+>>>>>>> 79da40cd16dffbcf03f8ee65233e940899e3d43e
 
 
