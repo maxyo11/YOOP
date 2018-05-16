@@ -27,7 +27,7 @@ consumer = oauth.Consumer(key=config.myKey, secret=config.mySecret)
 access_token = oauth.Token(key=config.myToken, secret=config.myTokenSecret)
 client = oauth.Client(consumer, access_token)
 
-
+'''
 
 #list of crypto currencies we want to query
 cryptoDataPosts = ['bitcoin', 'ethereum', 'ripple', 'bitcoin cash', 'cardano', 'litecoin']
@@ -56,33 +56,7 @@ twitterData = tweets["statuses"]
 
 
 # NEW: Below you can see how to gather data for each variable.
-
-def sendtweetstodb():
-    try:
-        for a in range(0,100):
-            user = twitterData[a]['user']['screen_name']
-            tweetID = twitterData[a]['id_str']
-            postDate = datetime.strptime(twitterData[a]["created_at"], '%a %b %d %H:%M:%S %z %Y').\
-                replace(tzinfo=timezone.utc).astimezone(pytz.timezone('Europe/Berlin')).\
-                strftime('%Y-%m-%d %H:%M:%S')
-            tweetText = twitterData[a]['text']
-            followers = twitterData[a]['user']['followers_count']
-            retweet = twitterData[a]['retweet_count']
-            favorite = twitterData[a]['favorite_count']
-
-        # insert the data to our db
-        # Change and coincide with db!
-            cursor.execute("INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, favorite) "
-                          "VALUES (%s,%s,%s,%s,%s,%s,%s)", (user, tweetID, postDate, tweetText, followers, retweet, favorite))
-            cnx.commit()
-            print(user, bitcoinPosts)
-    except BaseException as ex:
-        pass
-        print("Tweetcollection has finished. %s Tweets have been collected" % a)
-        print(ex)
-
-
-#sendtweetstodb()
+'''
 
 
 def sendrttweetstodb():
@@ -100,12 +74,147 @@ def sendrttweetstodb():
 
             print(userrt, tweetIDrt, postDatert, tweetTextrt, followersrt, retweetrt, favoritert)
 
-    except KeyError:
+    except (KeyError, IndexError) as er:
         pass
     print("Amount of tweets collected: %s" % a)
+    print(er)
 
 
-sendrttweetstodb()
+def callapi():
+    consumer = oauth.Consumer(key=config.myKey, secret=config.mySecret)
+    access_token = oauth.Token(key=config.myToken, secret=config.myTokenSecret)
+    client = oauth.Client(consumer, access_token)
+
+    cryptoDataPosts = ['bitcoin', 'ethereum', 'ripple', 'iota', 'cardano', 'litecoin']
+    # call twitter api to do a search with keyword from cryptoDataPosts
+    for i, val in enumerate(cryptoDataPosts):
+        bitcoinPosts = "https://api.twitter.com/1.1/search/tweets.json?l=en&count=100&q=/%s" % val
+        response, data = client.request(bitcoinPosts)
+        # Create a json object
+        tweets = json.loads(data)
+        # print(tweets)
+        twitterData = tweets["statuses"]
+        # This takes all Tweets out of the json list in twitterData
+        try:
+            for a in range(0, 101):
+                user = twitterData[a]['user']['screen_name']
+                tweetID = twitterData[a]['id_str']
+                postDate = datetime.strptime(twitterData[a]["created_at"], '%a %b %d %H:%M:%S %z %Y'). \
+                    replace(tzinfo=timezone.utc).astimezone(pytz.timezone('Europe/Berlin')). \
+                    strftime('%Y-%m-%d %H:%M:%S')
+                tweetText = twitterData[a]['text']
+                followers = twitterData[a]['user']['followers_count']
+                retweet = twitterData[a]['retweet_count']
+                favorite = twitterData[a]['favorite_count']
+                # insert the data to our db
+                # Change and coincide with db!
+                cnx = mysql.connector.connect(user=config.User, password=config.password,
+                                              host=config.host,
+                                              database=config.database,
+                                              charset=config.charset)
+                cursor = cnx.cursor()
+                cursor.execute(
+                    "INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, Currency) "
+                    "VALUES (%s,%s,%s,%s,%s,%s,%s)",
+                    (user, tweetID, postDate, tweetText, followers, retweet, val))
+                cnx.commit()
+                #print(user, val)
+        except (KeyError, IndexError) as ex:
+                print("%s Tweets about %s have been collected." % (a, val))
+                print(ex)
+        # This takes the tweets which have been retweeted out of the results list.
+        try:
+            for a in range(0, 100):
+                userrt = twitterData[a]['retweeted_status']['user']['screen_name']
+                tweetIDrt = twitterData[a]['retweeted_status']['id_str']
+                postDatert = datetime.strptime(twitterData[a]['retweeted_status']["created_at"],
+                                               '%a %b %d %H:%M:%S %z %Y'). \
+                    replace(tzinfo=timezone.utc).astimezone(pytz.timezone('Europe/Berlin')). \
+                    strftime('%Y-%m-%d %H:%M:%S')
+                tweetTextrt = twitterData[a]['retweeted_status']['text']
+                followersrt = twitterData[a]['retweeted_status']['user']['followers_count']
+                retweetrt = twitterData[a]['retweeted_status']['retweet_count']
+                favoritert = twitterData[a]['retweeted_status']['favorite_count']
+
+                print(userrt, tweetIDrt, postDatert, tweetTextrt, followersrt, retweetrt, favoritert)
+
+        except (KeyError, IndexError) as er:
+            pass
+            print("Amount of tweets collected: %s" % a)
+            print(er)
+
+
+#callapi()
+
+def callapi2():
+    consumer = oauth.Consumer(key=config.myKey, secret=config.mySecret)
+    access_token = oauth.Token(key=config.myToken, secret=config.myTokenSecret)
+    client = oauth.Client(consumer, access_token)
+
+    cryptoDataPosts = ['bitcoin', 'ethereum', 'ripple', 'iota', 'cardano', 'litecoin']
+    # call twitter api to do a search with keyword from cryptoDataPosts
+    for i, val in enumerate(cryptoDataPosts):
+        bitcoinPosts = "https://api.twitter.com/1.1/search/tweets.json?l=en&count=100&q=/%s" % val
+        response, data = client.request(bitcoinPosts)
+        # Create a json object
+        tweets = json.loads(data)
+        # print(tweets)
+        twitterData = tweets["statuses"]
+        # This takes all Tweets out of the json list in twitterData
+        # The first try checks if the tweet was a retweet. If it is it gets the main tweet and the retweet is ignored.
+        for a in range(0, 100):
+            try:
+                user = twitterData[a]['retweeted_status']['user']['screen_name']
+                tweetID = twitterData[a]['retweeted_status']['id_str']
+                postDate = datetime.strptime(twitterData[a]['retweeted_status']["created_at"],
+                                               '%a %b %d %H:%M:%S %z %Y'). \
+                    replace(tzinfo=timezone.utc).astimezone(pytz.timezone('Europe/Berlin')). \
+                    strftime('%Y-%m-%d %H:%M:%S')
+                tweetText = twitterData[a]['retweeted_status']['text']
+                followers = twitterData[a]['retweeted_status']['user']['followers_count']
+                retweet = twitterData[a]['retweeted_status']['retweet_count']
+                print(user)
+
+            except KeyError as ex:
+                try:
+                    user = twitterData[a]['user']['screen_name']
+                    tweetID = twitterData[a]['id_str']
+                    postDate = datetime.strptime(twitterData[a]["created_at"], '%a %b %d %H:%M:%S %z %Y'). \
+                    replace(tzinfo=timezone.utc).astimezone(pytz.timezone('Europe/Berlin')). \
+                    strftime('%Y-%m-%d %H:%M:%S')
+                    tweetText = twitterData[a]['text']
+                    followers = twitterData[a]['user']['followers_count']
+                    retweet = twitterData[a]['retweet_count']
+                    # insert the data to our db
+                    # Change and coincide with db!
+                    print(user)
+                except (IndexError) as er:
+                    print(er)
+                print(ex)
+            except IndexError:
+                print("Amount of tweets collected: %s" % a)
+                break
+
+
+            cnx = mysql.connector.connect(user=config.User, password=config.password,
+                                              host=config.host,
+                                              database=config.database,
+                                              charset=config.charset)
+            cursor = cnx.cursor()
+            cursor.execute(
+                 "INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, Currency) "
+                 "VALUES (%s,%s,%s,%s,%s,%s,%s)", (user, tweetID, postDate, tweetText, followers, retweet, val))
+            cnx.commit()
+
+
+
+callapi2()
+
+
+
+
+
+
 
 
 '''

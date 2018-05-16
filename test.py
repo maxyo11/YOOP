@@ -13,11 +13,6 @@ def callapi():
     for i in range(0,50):
         print(i)
 
-
-def collectstart():
-    while True:
-        callapi()
-        if input("x to stop") == 'x':
-            break
-
-collectstart()
+a='is'
+b='Test'
+print("This %s a %s" % (a, b))
