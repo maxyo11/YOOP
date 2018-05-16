@@ -9,7 +9,15 @@ if is_venv():
 else:
     print('outside virtualenv or venv')
 
+def callapi():
+    for i in range(0,50):
+        print(i)
 
-for i in range(0,50):
 
-    print(i)
+def collectstart():
+    while True:
+        callapi()
+        if input("x to stop") == 'x':
+            break
+
+collectstart()

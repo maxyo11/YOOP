@@ -1,13 +1,7 @@
-import base64
-import requests
 import oauth2 as oauth
 import json
-#Connect to our MySQL database
-#and store the data
 import datetime
 import mysql.connector
-from mysql.connector import errorcode
-import time
 import config
 from datetime import datetime, timezone
 import pytz
@@ -16,13 +10,14 @@ import pytz
 #Authentificate to our MYSQL db
 #utf8mb4 allows to support emoji (4 instead of 3 megabytes)
 
+'''
 cnx = mysql.connector.connect(user=config.User, password=config.password,
                             host=config.host,
                             database=config.database,
                             charset =config.charset)
 cursor = cnx.cursor()
 
-
+'''
 
 
 #Authentificate to twitter API
@@ -64,7 +59,7 @@ twitterData = tweets["statuses"]
 
 def sendtweetstodb():
     try:
-        for a in range(0,150):
+        for a in range(0,100):
             user = twitterData[a]['user']['screen_name']
             tweetID = twitterData[a]['id_str']
             postDate = datetime.strptime(twitterData[a]["created_at"], '%a %b %d %H:%M:%S %z %Y').\
@@ -74,24 +69,43 @@ def sendtweetstodb():
             followers = twitterData[a]['user']['followers_count']
             retweet = twitterData[a]['retweet_count']
             favorite = twitterData[a]['favorite_count']
+
         # insert the data to our db
         # Change and coincide with db!
             cursor.execute("INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, favorite) "
-                           "VALUES (%s,%s,%s,%s,%s,%s,%s)", (user, tweetID, postDate, tweetText, followers, retweet, favorite))
+                          "VALUES (%s,%s,%s,%s,%s,%s,%s)", (user, tweetID, postDate, tweetText, followers, retweet, favorite))
             cnx.commit()
             print(user, bitcoinPosts)
     except BaseException as ex:
+        pass
         print("Tweetcollection has finished. %s Tweets have been collected" % a)
         print(ex)
 
 
-#while True:
-sendtweetstodb()
-#except BaseException as exep
- #   print(exep)
+#sendtweetstodb()
 
 
+def sendrttweetstodb():
+    try:
+        for a in range(0,100):
+            userrt = twitterData[a]['retweeted_status']['user']['screen_name']
+            tweetIDrt = twitterData[a]['retweeted_status']['id_str']
+            postDatert = datetime.strptime(twitterData[a]['retweeted_status']["created_at"], '%a %b %d %H:%M:%S %z %Y').\
+                replace(tzinfo=timezone.utc).astimezone(pytz.timezone('Europe/Berlin')). \
+                strftime('%Y-%m-%d %H:%M:%S')
+            tweetTextrt = twitterData[a]['retweeted_status']['text']
+            followersrt = twitterData[a]['retweeted_status']['user']['followers_count']
+            retweetrt = twitterData[a]['retweeted_status']['retweet_count']
+            favoritert = twitterData[a]['retweeted_status']['favorite_count']
 
+            print(userrt, tweetIDrt, postDatert, tweetTextrt, followersrt, retweetrt, favoritert)
+
+    except KeyError:
+        pass
+    print("Amount of tweets collected: %s" % a)
+
+
+sendrttweetstodb()
 
 
 '''

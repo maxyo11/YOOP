@@ -1,13 +1,7 @@
-import base64
-import requests
 import oauth2 as oauth
 import json
-#Connect to our MySQL database
-#and store the data
 import datetime
 import mysql.connector
-from mysql.connector import errorcode
-import time
 import config
 from datetime import datetime, timezone
 import pytz
@@ -54,16 +48,44 @@ def callapi():
                                               charset=config.charset)
                 cursor = cnx.cursor()
                 cursor.execute(
-                    "INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, favorite, Currency) "
-                    "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
-                    (user, tweetID, postDate, tweetText, followers, retweet, favorite, val))
+                    "INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, Currency) "
+                    "VALUES (%s,%s,%s,%s,%s,%s,%s)",
+                    (user, tweetID, postDate, tweetText, followers, retweet, val))
                 cnx.commit()
                 #print(user, val)
-        except BaseException as ex:
-                print("Tweetcollection has finished. %s Tweets have been collected" % a)
+        except KeyError as ex:
+                print("%s Tweets about %s have been collected.", a, val)
                 print(ex)
 
 
-if __name__ == '__main__':
+def sendrttweetstodb():
+    try:
+        for a in range(0,100):
+            userrt = twitterData[a]['retweeted_status']['user']['screen_name']
+            tweetIDrt = twitterData[a]['retweeted_status']['id_str']
+            postDatert = datetime.strptime(twitterData[a]['retweeted_status']["created_at"], '%a %b %d %H:%M:%S %z %Y').\
+                replace(tzinfo=timezone.utc).astimezone(pytz.timezone('Europe/Berlin')). \
+                strftime('%Y-%m-%d %H:%M:%S')
+            tweetTextrt = twitterData[a]['retweeted_status']['text']
+            followersrt = twitterData[a]['retweeted_status']['user']['followers_count']
+            retweetrt = twitterData[a]['retweeted_status']['retweet_count']
+            favoritert = twitterData[a]['retweeted_status']['favorite_count']
+
+            print(userrt, tweetIDrt, postDatert, tweetTextrt, followersrt, retweetrt, favoritert)
+
+    except KeyError:
+        pass
+    print("Amount of tweets collected: %s" % a)
+
+
+def collectstart():
     while True:
         callapi()
+        if input("x to stop") == 'x':
+            break
+
+
+if __name__ == '__main__':
+    collectstart()
+
+
