@@ -5,12 +5,13 @@ import mysql.connector
 import config
 from datetime import datetime, timezone
 import pytz
-
+import cloudlanguage
 
 def callapi():
     consumer = oauth.Consumer(key=config.myKey, secret=config.mySecret)
     access_token = oauth.Token(key=config.myToken, secret=config.myTokenSecret)
     client = oauth.Client(consumer, access_token)
+
 
     cryptoDataPosts = ['bitcoin', 'ethereum', 'ripple', 'iota', 'cardano', 'litecoin']
     # call twitter api to do a search with keyword from cryptoDataPosts
@@ -56,6 +57,11 @@ def callapi2():
     access_token = oauth.Token(key=config.myToken, secret=config.myTokenSecret)
     client = oauth.Client(consumer, access_token)
 
+    cnx = mysql.connector.connect(user=config.User, password=config.password,
+                                  host=config.host,
+                                  database=config.database,
+                                  charset=config.charset)
+    cursor = cnx.cursor()
     cryptoDataPosts = ['bitcoin', 'ethereum', 'ripple', 'iota', 'cardano', 'litecoin']
     # call twitter api to do a search with keyword from cryptoDataPosts
     for i, val in enumerate(cryptoDataPosts):
@@ -96,20 +102,19 @@ def callapi2():
             except IndexError:
                 print("%s Tweets about %s have been collected." % (a, val))
                 break
+            t = tweetText
 
+            sentimentresult = cloudlanguage.analyseSentiment(t)
 
-            cnx = mysql.connector.connect(user=config.User, password=config.password,
-                                              host=config.host,
-                                              database=config.database,
-                                              charset=config.charset)
-            cursor = cnx.cursor()
             cursor.execute(
-                 "INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, Currency) "
-                 "VALUES (%s,%s,%s,%s,%s,%s,%s)", (user, tweetID, postDate, tweetText, followers, retweet, val))
+                 "INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, Currency, sentiment) "
+                 "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)", (user, tweetID, postDate, tweetText, followers, retweet, val, sentimentresult))
             cnx.commit()
 
 
-def collectstart():
+def main():
+    #tweetText = callapi2()
+    #sentimentresult = cloudlanguage.analyseSentiment()
     while True:
         callapi2()
     #if input("x to stop") == 'x':
@@ -117,6 +122,6 @@ def collectstart():
 
 
 if __name__ == '__main__':
-    collectstart()
+    main()
 
 

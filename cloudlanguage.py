@@ -21,12 +21,11 @@ def get_average_sentiment():
     for a in average:
         print(a)
 
-get_average_sentiment()
 
 
 
 # Authentication Google Cloud API:
-def analyseSentiment():
+def analyseSentiment(t):
     # Import Google Cloud package
     import google.cloud.language
     # environment variable needs to be set: GOOGLE_APPLICATION_CREDENTIALS="Key Location"
@@ -35,7 +34,7 @@ def analyseSentiment():
 
     # Make an authenticated API request
     # Specify the text you want to analyse
-    text = 'Bitcoin is the best thing ever!'
+    text = t
     document = google.cloud.language.types.Document(
         content=text,
         type=google.cloud.language.enums.Document.Type.PLAIN_TEXT)
@@ -46,8 +45,9 @@ def analyseSentiment():
     print(u'Text: {}'.format(text))
     print(u'Sentiment: Score: {}, Magnitude: {}'.format(
         sentiment.score, sentiment.magnitude))
+    sentimentresult = sentiment.score
+    return sentimentresult
 
-# analyseSentiment()
 
 
 # Create a Language client.
