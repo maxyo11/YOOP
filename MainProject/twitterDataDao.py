@@ -8,7 +8,7 @@ class twitterDataDao:
         self.DBops = DBops
 
 
-    def updateTwitterTable(self, user, tweetID, postDate, tweetText, followers, retweet, val, sentimentresult):
+    def updateTwitterTable(self, user, tweetID, postDate, tweetText, followers, retweet, val, sentimentResult):
 
         DBops().getDB()
 
@@ -16,7 +16,7 @@ class twitterDataDao:
             DBops.cnx.cursor().execute(
                 "INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, Currency, sentiment)"
                 "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
-                (user, tweetID, postDate, tweetText, followers, retweet, val, sentimentresult))
+                (user, tweetID, postDate, tweetText, followers, retweet, val, sentimentResult))
         finally:
             DBops.cnx.commit()
 

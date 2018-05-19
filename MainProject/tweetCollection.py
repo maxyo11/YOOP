@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import pytz
 import cloudlanguage
 from MainProject.twitterDataDao import twitterDataDao
-from MainProject.DBops import DBops
+import google.cloud.language
 
 
 class tweetCollection:
@@ -61,8 +61,30 @@ class tweetCollection:
                     print("%s Tweets about %s have been collected." % (a, val))
                     break
                 t = tweetText
-                sentimentresult = cloudlanguage.analyseSentiment(t)
-                twitterDataDao().updateTwitterTable(user, tweetID, postDate, tweetText, followers, retweet, val, sentimentresult)
+                sentimentResult = tweetCollection().analyseSentiment(t)
+                twitterDataDao().updateTwitterTable(user, tweetID, postDate, tweetText, followers, retweet, val, sentimentResult)
+
+    def analyseSentiment(self, t):
+        # environment variable needs to be set: GOOGLE_APPLICATION_CREDENTIALS="Key Location"
+        # This way we can leave the argument for the LanguageServiceClient empty.
+        language_client = google.cloud.language.LanguageServiceClient()
+
+        # Make an authenticated API request
+        # Specify the text you want to analyse
+        text = t
+        document = google.cloud.language.types.Document(
+            content=text,
+            language='en',
+            type=google.cloud.language.enums.Document.Type.PLAIN_TEXT)
+
+        # Use Language to detect the sentiment of the text.
+        response = language_client.analyze_sentiment(document=document)
+        sentiment = response.document_sentiment
+        #print(u'Text: {}'.format(text))
+        #print(u'Sentiment: Score: {}, Magnitude: {}'.format(
+         #   sentiment.score, sentiment.magnitude))
+        sentimentResult = sentiment.score
+        return sentimentResult
 
 
 def main():
