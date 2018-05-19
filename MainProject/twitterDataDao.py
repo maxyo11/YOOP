@@ -5,11 +5,13 @@ import config
 class twitterDataDao:
 
     def __init__(self):
-        self.test = None
+        self.DBops = DBops
 
 
     def updateTwitterTable(self, user, tweetID, postDate, tweetText, followers, retweet, val, sentimentresult):
+
         DBops().getDB()
+
         try:
             DBops.cnx.cursor().execute(
                 "INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, Currency, sentiment)"

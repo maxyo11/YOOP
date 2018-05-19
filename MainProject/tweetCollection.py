@@ -20,7 +20,7 @@ class tweetCollection:
         access_token = oauth.Token(key=config.myToken, secret=config.myTokenSecret)
         client = oauth.Client(consumer, access_token)
 
-        cryptoDataPosts = ['bitcoin', 'ethereum', 'ripple', 'iota', 'cardano', 'litecoin']
+        cryptoDataPosts = ['bitcoin', 'ethereum', 'ripple', 'cardano', 'litecoin']
         # call twitter api to do a search with keyword from cryptoDataPosts
         for i, val in enumerate(cryptoDataPosts):
             bitcoinPosts = "https://api.twitter.com/1.1/search/tweets.json?l=en&count=100&q=/%s" % val

@@ -11,15 +11,9 @@ else:
 
 
 
-def test():
-    #x = 'Test'
+name = 'bitcoin'
 
-    try:
-        print(x)
+sql = f'insert into {name}Data'
 
-    except BaseException:
-        None
-    finally:
-        print('finished')
 
-test()
+print(sql)
