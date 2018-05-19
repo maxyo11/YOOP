@@ -9,10 +9,17 @@ if is_venv():
 else:
     print('outside virtualenv or venv')
 
-def callapi():
-    for i in range(0,50):
-        print(i)
 
-a='is'
-b='Test'
-print("This %s a %s" % (a, b))
+
+def test():
+    #x = 'Test'
+
+    try:
+        print(x)
+
+    except BaseException:
+        None
+    finally:
+        print('finished')
+
+test()
