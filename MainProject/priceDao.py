@@ -1,5 +1,9 @@
 from MainProject.DBops import DBops
 
+'''
+This Database Access Object establishes a connection with our DB using the DBops class. It then uses this connection
+to update the database tables with the prices of the cryptocurrencies.
+'''
 
 class priceDao:
 

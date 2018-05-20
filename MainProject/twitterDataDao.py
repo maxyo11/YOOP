@@ -1,6 +1,11 @@
 from MainProject.DBops import DBops
-import mysql.connector
-import config
+
+
+'''
+This Database Access Object establishes a connection with our DB using the DBops class. It then uses this connection
+to update the TwitterTable. The values (user, tweetID, postDate, ...) are passed by the callapi method of the
+tweetCollection class. 
+'''
 
 class twitterDataDao:
 

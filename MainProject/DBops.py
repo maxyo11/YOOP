@@ -2,6 +2,12 @@ import mysql.connector
 import mysql.connector.errorcode
 import config
 
+'''
+This Class allows us to connect to the Database. The necessary information user, password and so on is stored in the
+config.py file. We have added a testConnection method. This allows us to do troubleshooting if we ever fail to connect
+to the database.
+'''
+
 class DBops:
     def __init__(self, db_name=config.database, user=config.User, password=config.password, cnx=None):
         self.db_name = db_name
@@ -37,7 +43,7 @@ class DBops:
             self.getConnection()
             return self
 
-    def testConnect(self):
+    def testConnection(self):
         try:
             DBops().getDB()
 

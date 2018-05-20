@@ -1,14 +1,20 @@
 import oauth2 as oauth
 import json
 import datetime
-import mysql.connector
 import config
 from datetime import datetime, timezone
 import pytz
-import cloudlanguage
 from MainProject.twitterDataDao import twitterDataDao
 import google.cloud.language
 
+'''
+This class allows us to collect Tweets from the Twitter API. We loop through the list of currencies which we want to
+analyse. For each currency an API call is made. We get the response in .json format. To get the individual Tweets
+out of the response we have to loop through a list of around 100 Tweets. For each api call we can collect up to 100
+Tweets. The text of each Tweet is then passed through the analyseSentiment method. This method responds with the
+sentiment of the text. At that point we have collected all the values of the tweet we need. Those values are then sent
+to the TwitterDataDao.
+'''
 
 class tweetCollection:
     def __init__(self):
@@ -31,7 +37,7 @@ class tweetCollection:
             twitterData = tweets["statuses"]
             # This takes all Tweets out of the json list in twitterData
             # The first try checks if the tweet was a retweet. If it is it gets the main tweet and the retweet is ignored.
-            for a in range(0, 100):
+            for a in range(0, 105):
                 try:
                     user = twitterData[a]['retweeted_status']['user']['screen_name']
                     tweetID = twitterData[a]['retweeted_status']['id_str']
