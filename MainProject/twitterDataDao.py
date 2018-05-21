@@ -26,20 +26,23 @@ class twitterDataDao:
                 (user, tweetID, postDate, tweetText, followers, retweet, val, sentimentResult))
         finally:
             DBops.cnx.commit()
+            DBops().disconnectDB()
 
     def selectTweets(self, cryptoName):
         DBops().getDB()
         cursor = DBops.cnx.cursor()
+        try:
+            df = pd.read_sql("select COUNT(id), postDate, followers, retweet, Currency, sentiment "
+                             "from twitterTable "
+                             f"WHERE Currency= '{cryptoName}' "
+                             "GROUP BY id "
+                             "ORDER BY postDate", con=DBops.cnx)
+        finally:
+            DBops().disconnectDB()
 
-        cursor.execute("select COUNT(id), postDate, followers, retweet, Currency, sentiment "
-                       "from twitterTable "
-                       "WHERE Currency= 'bitcoin' "
-                       "GROUP BY id "
-                       "ORDER BY postDate")
-        data = cursor.fetchall()
-        return data
+        return df
 
 
-    #def getTweets(self, cryptoName):
+
 
 

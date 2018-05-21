@@ -94,29 +94,18 @@ class tweetCollection:
         return sentimentResult
 
     def getAnalysis(self,cryptoName):
-        data = twitterDataDao().selectTweets(cryptoName)
-        df = pd.DataFrame(data)
-        df.column[1].map(lambda x: x.strftime('%Y-%m-%d'))
-        print(df)
-        print(data)
-        # for row in data:
-        # print row[0], row[1], row[2], row[3], row[5]
-
-        nbPosts = sum(row[0] for row in data)
-        sumFollowers = sum(row[2] for row in data)
-        sumRetweet = sum(row[3] for row in data) / nbPosts
-        countSentiment = len(filter(None, (row[5] for row in data)))
-        sumSentiment = (sum(filter(None, (row[5] for row in data))) / countSentiment) * nbPosts
-        print(f"{cryptoName}:")
-        print(sumFollowers)
-        print(nbPosts)
-        print(sumRetweet)
-        print(sumSentiment)
-
-        tweetsValue = sumRetweet + sumFollowers + sumSentiment
+        df = twitterDataDao().selectTweets(cryptoName)
+        df['postDate'] = pd.to_datetime(df['postDate'])
+        df['postDate'] = df['postDate'].values.astype('datetime64[D]')
+        result = df.groupby('postDate').sum()
+        # now that we have a sum value of each day for each row,
+        # sum the followers, retweets and sentiments, replacing  none values by 0
+        sum = (result['followers'] + result['retweet'] + result.fillna(0)['sentiment']) / result['COUNT(id)']
+        lastSum = sum.iloc[-6:]
+        print(lastSum)
+        tweetsValue_bitcoin = lastSum.values.tolist()
 
         print(tweetsValue_bitcoin)
-        print(countSentiment)
 
 
 

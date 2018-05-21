@@ -24,13 +24,17 @@ class priceDao:
 
         finally:
             DBops.cnx.commit()
+            DBops().disconnectDB()
 
     def selectPrice(self, cryptoName):
         priceDao().connect()
         # retrieve cyrpto values
-        df = pd.read_sql(f"select {cryptoName}_data,readable_{cryptoName}_time from {cryptoName}Data ORDER BY readable_{cryptoName}_time",
+        try:
+            df = pd.read_sql(f"select {cryptoName}_data,readable_{cryptoName}_time from {cryptoName}Data ORDER BY readable_{cryptoName}_time",
                          con=DBops.cnx)
-        return df
+        finally:
+            return df
+            DBops().disconnectDB()
 
 
 

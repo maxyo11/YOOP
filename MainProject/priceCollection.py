@@ -26,6 +26,7 @@ class priceCollection:
             readable_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time_weird))
             priceDao().updatePrice(name, price, readable_time)
 
+
     def getPrice(self, cryptoName):
         df = priceDao().selectPrice(cryptoName)
         df[f'readable_{cryptoName}_time'] = pd.to_datetime(df[f'readable_{cryptoName}_time'])

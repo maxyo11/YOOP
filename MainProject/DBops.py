@@ -32,6 +32,7 @@ class DBops:
 
     def disconnectDB(self):
         if DBops.DB_Flag:
+            DBops.cnx.cursor.close()
             DBops.cnx.close()
             DBops.DB_Flag = False
 
