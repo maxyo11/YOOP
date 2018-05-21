@@ -6,15 +6,16 @@ from datetime import datetime, timezone
 import pytz
 from MainProject.twitterDataDao import twitterDataDao
 import google.cloud.language
+import pandas as pd
 
-'''
+"""
 This class allows us to collect Tweets from the Twitter API. We loop through the list of currencies which we want to
 analyse. For each currency an API call is made. We get the response in .json format. To get the individual Tweets
 out of the response we have to loop through a list of around 100 Tweets. For each api call we can collect up to 100
 Tweets. The text of each Tweet is then passed through the analyseSentiment method. This method responds with the
 sentiment of the text. At that point we have collected all the values of the tweet we need. Those values are then sent
 to the TwitterDataDao.
-'''
+"""
 
 class tweetCollection:
     def __init__(self):
@@ -92,6 +93,32 @@ class tweetCollection:
         sentimentResult = sentiment.score
         return sentimentResult
 
+    def getAnalysis(self,cryptoName):
+        data = twitterDataDao().selectTweets(cryptoName)
+        df = pd.DataFrame(data)
+        df.column[1].map(lambda x: x.strftime('%Y-%m-%d'))
+        print(df)
+        print(data)
+        # for row in data:
+        # print row[0], row[1], row[2], row[3], row[5]
+
+        nbPosts = sum(row[0] for row in data)
+        sumFollowers = sum(row[2] for row in data)
+        sumRetweet = sum(row[3] for row in data) / nbPosts
+        countSentiment = len(filter(None, (row[5] for row in data)))
+        sumSentiment = (sum(filter(None, (row[5] for row in data))) / countSentiment) * nbPosts
+        print(f"{cryptoName}:")
+        print(sumFollowers)
+        print(nbPosts)
+        print(sumRetweet)
+        print(sumSentiment)
+
+        tweetsValue = sumRetweet + sumFollowers + sumSentiment
+
+        print(tweetsValue_bitcoin)
+        print(countSentiment)
+
+
 
 def main():
     #tweetText = callapi2()
@@ -102,8 +129,8 @@ def main():
      #   break
 
 
-if __name__ == '__main__':
-    tweetCollection().callapi()
+#if __name__ == '__main__':
+   # tweetCollection().callapi()
 
 
 '''

@@ -1,4 +1,6 @@
 from MainProject.DBops import DBops
+import sys
+import pandas as pd
 
 
 '''
@@ -25,24 +27,19 @@ class twitterDataDao:
         finally:
             DBops.cnx.commit()
 
+    def selectTweets(self, cryptoName):
+        DBops().getDB()
+        cursor = DBops.cnx.cursor()
+
+        cursor.execute("select COUNT(id), postDate, followers, retweet, Currency, sentiment "
+                       "from twitterTable "
+                       "WHERE Currency= 'bitcoin' "
+                       "GROUP BY id "
+                       "ORDER BY postDate")
+        data = cursor.fetchall()
+        return data
 
 
+    #def getTweets(self, cryptoName):
 
 
-
-
-
-
-'''        try:
-            with DBops.cnx.cursor as cursor:
-                cursor.execute(
-                    "INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, Currency,)"
-                    "VALUES (%s,%s,%s,%s,%s,%s,%s)",
-                    (user, tweetID, postDate, tweetText, followers, retweet, val,))
-        except BaseException as ex:
-            x = 1
-        finally:
-            DBops.cnx.commit()
-            print('test')
-
-'''

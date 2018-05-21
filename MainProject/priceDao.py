@@ -1,5 +1,6 @@
 from MainProject.DBops import DBops
-
+import sys
+import pandas as pd
 '''
 This Database Access Object establishes a connection with our DB using the DBops class. It then uses this connection
 to update the database tables with the prices of the cryptocurrencies.
@@ -24,6 +25,14 @@ class priceDao:
         finally:
             DBops.cnx.commit()
 
+    def selectPrice(self, cryptoName):
+        priceDao().connect()
+        # retrieve cyrpto values
+        df = pd.read_sql(f"select {cryptoName}_data,readable_{cryptoName}_time from {cryptoName}Data ORDER BY readable_{cryptoName}_time",
+                         con=DBops.cnx)
+        return df
 
 
+
+        # retrieve ripple values
 
