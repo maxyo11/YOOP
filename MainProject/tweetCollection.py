@@ -103,9 +103,9 @@ class tweetCollection:
         sum = (result['followers'] + result['retweet'] + result.fillna(0)['sentiment']) / result['COUNT(id)']
         lastSum = sum.iloc[-6:]
         print(lastSum)
-        tweetsValue_bitcoin = lastSum.values.tolist()
+        tweetValue = lastSum.values.tolist()
 
-        print(tweetsValue_bitcoin)
+        print(tweetValue)
 
 
 
