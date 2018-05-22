@@ -2,10 +2,9 @@ from MainProject.DBops import DBops
 import pandas as pd
 
 
+
 '''
-This Database Access Object establishes a connection with our DB using the DBops class. It then uses this connection
-to update the TwitterTable. The values (user, tweetID, postDate, ...) are passed by the callapi method of the
-tweetCollection class. 
+Here we tried to Inert into the db2. Sadly we did not manage to do so. 
 '''
 
 class twitterDataDao:
@@ -20,9 +19,15 @@ class twitterDataDao:
 
         try:
             DBops.cnx.cursor().execute(
-                "INSERT INTO twitterTable (user, tweet_ID, postDate, tweetText, followers, retweet, Currency, sentiment)"
-                "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
-                (user, tweetID, postDate, tweetText, followers, retweet, val, sentimentResult))
+                "INSERT INTO user (user, followers)"
+                "VALUES (%s,%s)",
+                (user, followers))
+            x = "LAST_INSERT_ID()"
+            DBops.cnx.cursor().execute(
+                "INSERT INTO twitterTable (tweetID, user_iduser postDate, tweetText, retweet, Currency, sentiment)"
+                "VALUES (%s,%s,%s,%s,%s,%s,%s)",
+                (tweetID, x, postDate, tweetText, retweet, val, sentimentResult))
+
         finally:
             DBops.cnx.commit()
             DBops().disconnectDB()
@@ -40,8 +45,3 @@ class twitterDataDao:
             DBops().disconnectDB()
 
         return df
-
-
-
-
-

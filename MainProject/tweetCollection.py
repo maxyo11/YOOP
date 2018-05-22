@@ -100,7 +100,7 @@ class tweetCollection:
         # now that we have a sum value of each day for each row,
         # sum the followers, retweets and sentiments, replacing  none values by 0
         sum = (result['followers'] + result['retweet'] + result.fillna(0)['sentiment']) #/ result['COUNT(id)']
-        lastSum = sum.iloc[-6:]
+        lastSum = sum.iloc[-7:]
         tweetValue = lastSum.values.tolist()
 
         print(tweetValue)

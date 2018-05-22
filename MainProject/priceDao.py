@@ -1,5 +1,4 @@
 from MainProject.DBops import DBops
-import sys
 import pandas as pd
 '''
 This Database Access Object establishes a connection with our DB using the DBops class. It then uses this connection

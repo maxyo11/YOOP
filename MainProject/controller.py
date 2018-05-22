@@ -18,8 +18,8 @@ class Controller:
         while self.running:
             choice = input("Please choose what you want to do. (1 / 2 / 3 / 4 ) ")
             if choice == "1":
-                tweetCollection().callapi()
                 priceCollection().collectPrice()
+                tweetCollection().callapi()
                 break
             if choice == "2":
                 print("Tweets will now be collected twice a day while this is running.\n"
