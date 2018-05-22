@@ -11,6 +11,3 @@ else:
     print('outside virtualenv or venv')
 
 """
-
-def printTest():
-    print('Test')

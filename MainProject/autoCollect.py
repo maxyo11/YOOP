@@ -1,5 +1,6 @@
 import schedule
-from MainProject import priceCollection, tweetCollection
+from MainProject.priceCollection import priceCollection
+from MainProject.tweetCollection import tweetCollection
 import threading
 
 """
@@ -10,28 +11,24 @@ The Tweet collection is limited to 2 times a day due to the Google Cloud Sentime
 
 
 def price():
-    priceCollection.priceCollection().collectPrice()
+    priceCollection().collectPrice()
 
 def tweet():
-    tweetCollection.tweetCollection().callapi()
+    tweetCollection().callapi()
 
 def test():
-    print('Test')
+    print("Test")
 
 
-"""
-schedule.every().hour.do(price)
-schedule.every().day.at("08:00").do(tweet)
-schedule.every().day.at("20:00").do(tweet)
-"""
-
-class autoCollectThreading(object):
-    """ Threading class
+""" 
+Threading class:
     The run() method will be started and it will run in the background
     until the application is closed.
-    """
+"""
+class autoCollectThreading(object):
 
-    def __init__(self, interval=0):
+
+    def __init__(self, interval=1):
         """ Constructor
         :type interval: int
         :param interval: Check interval, in seconds
@@ -43,7 +40,6 @@ class autoCollectThreading(object):
         thread.start()                                  # Start the execution
 
         schedule.clear()                                # gets rid of old schedules
-        schedule.every(3).seconds.do(test)
         schedule.every().hour.do(price)
         schedule.every().day.at("08:00").do(tweet)      # Tweet collection happens twice a day.
         schedule.every().day.at("20:00").do(tweet)
@@ -55,7 +51,6 @@ class autoCollectThreading(object):
         while True:
             schedule.run_pending()
 
-#example = autoCollectThreading().run()
 
 
 

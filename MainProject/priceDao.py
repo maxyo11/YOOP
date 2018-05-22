@@ -12,7 +12,7 @@ class priceDao:
         self.DBops = DBops
 
     def connect(self):
-        DBops().getDB()
+        DBops().getDB()         # Establish a connection to the DB
 
     def updatePrice(self, name, price, readable_time):
         priceDao().connect()
@@ -28,15 +28,11 @@ class priceDao:
 
     def selectPrice(self, cryptoName):
         priceDao().connect()
-        # retrieve cyrpto values
+        # retrieve crypto values
         try:
             df = pd.read_sql(f"select {cryptoName}_data,readable_{cryptoName}_time from {cryptoName}Data ORDER BY readable_{cryptoName}_time",
                          con=DBops.cnx)
-        finally:
             return df
+        finally:
             DBops().disconnectDB()
-
-
-
-        # retrieve ripple values
 

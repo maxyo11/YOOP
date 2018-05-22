@@ -3,6 +3,7 @@ import time
 from MainProject.priceDao import priceDao
 import sys
 import pandas as pd
+import numpy as np
 
 
 class priceCollection:
@@ -16,15 +17,13 @@ class priceCollection:
         cryptoID = ['1', '1027', '52', '2', '2010']
         for i, val in enumerate(cryptoID):
             tickerURL = "https://api.coinmarketcap.com/v2/ticker/%s/" % val
-            print(tickerURL)
             response = requests.get(tickerURL).json()
             name = response['data']['website_slug']
-            print(name)
             price = response['data']['quotes']['USD']['price']
-            print(price)
             time_weird = response['metadata']['timestamp']
             readable_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time_weird))
             priceDao().updatePrice(name, price, readable_time)
+            print(f"The price of {name} right now is ${price}.")
 
 
     def getPrice(self, cryptoName):
@@ -36,8 +35,13 @@ class priceCollection:
         list_of_list = my_list.tolist()
         listSelect = [row[2] for row in list_of_list]
         # cryptoValue = map(lambda x: x.encode('ascii'), listSelect)
-        print(listSelect)
-        return listSelect
+        cryptoValue = np.array(listSelect).astype(np.float)
+        print(cryptoValue)
+        return cryptoValue
 
-if __name__ == '__main__':
-    priceCollection().collectPrice()
+    def getActualPrice(self, value):
+        # get the actual value of crypto currencies
+        tickerURL = "https://api.coinmarketcap.com/v2/ticker/%s/" % value
+        response = requests.get(tickerURL).json()
+        actual_data = response['data']['quotes']['USD']['price']
+        return actual_data
