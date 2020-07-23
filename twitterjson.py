@@ -224,9 +224,9 @@ ID_STR_ = {'statuses': [
      'source': '<a href="http://twitter.com/download/iphone" rel="nofollow">Twitter for iPhone</a>',
      'in_reply_to_status_id': 995315628411117569, 'in_reply_to_status_id_str': '995315628411117569',
      'in_reply_to_user_id': 19847181, 'in_reply_to_user_id_str': '19847181', 'in_reply_to_screen_name': 'novogratz',
-     'user': {'id': 942252916475179008, 'id_str': '942252916475179008', 'name': 'Litecoin Master [LTC 8k] [BTC 250k]',
+     'user': {'id': 942252916475179008, 'id_str': '942252916475179008', 'name': 'Litecoin Main [LTC 8k] [BTC 250k]',
               'screen_name': 'xtdisnkfe', 'location': 'United States',
-              'description': 'litecoin is like bitcoin but better. Bitcoin and Litecoin are master coins. I’m here to help, learn and share litecoin news as we move towards market adoption',
+              'description': 'litecoin is like bitcoin but better. Bitcoin and Litecoin are main coins. I’m here to help, learn and share litecoin news as we move towards market adoption',
               'url': 'https://t.co/eHmrPsWm5g', 'entities': {'url': {'urls': [
              {'url': 'https://t.co/eHmrPsWm5g', 'expanded_url': 'http://flappening.watch/',
               'display_url': 'flappening.watch', 'indices': [0, 23]}]}, 'description': {'urls': []}},
